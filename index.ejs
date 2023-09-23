@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hospital Management System</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Hospital Management System</h1>
+    <h2>User Login</h2>
+    <form id="user-login-form" method="post" action="/login/user">
+      <label for="email">Email:</label>
+      <input type="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+    <div id="user-login-message"></div>
+
+    <h2>Doctor Login</h2>
+    <form id="doctor-login-form" method="post" action="/login/doctor">
+      <label for="email">Email:</label>
+      <input type="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+    <div id="doctor-login-message"></div>
+    
+    <h2>User Registration</h2>
+<form id="user-form" method="post" action="/register/user">
+  <label for="name">Name:</label>
+  <input type="text" name="name" required>
+
+  <label for="email">Email:</label>
+  <input type="email" name="email" required>
+
+  <label for="password">Password:</label>
+  <input type="password" name="password" required>
+
+  <button type="submit">Register User</button>
+</form>
+<div id="user-message"></div>
+
+<h2>Doctor Registration</h2>
+<form id="doctor-form" method="post" action="/register/doctor">
+  <label for="name">Name:</label>
+  <input type="text" name="name" required>
+
+  <label for="email">Email:</label>
+  <input type="email" name="email" required>
+
+  <label for="password">Password:</label>
+  <input type="password" name="password" required>
+
+  <label for="specialization">Specialization:</label>
+  <select name="specialization" required>
+    <option value="">Select specialization</option>
+    <option value="Cardiologist">Cardiologist</option>
+    <option value="Dermatologist">Dermatologist</option>
+    <option value="Endocrinologist">Endocrinologist</option>
+    <option value="Gastroenterologist">Gastroenterologist</option>
+    <option value="Neurologist">Neurologist</option>
+    <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+    <option value="Pediatrician">Pediatrician</option>
+  </select>
+
+  <button type="submit">Register Doctor</button>
+</form>
+<div id="doctor-message"></div>
+
+<h2>Add New Specialization</h2>
+<button id="add-specialization-btn" type="submit">Add New Specialization</button>
+
+<form id="add-specialization-form" method="post" action="/add-specialization" style="display:none;">
+  <label for="specialization">Specialization:</label>
+  <input type="text" name="specialization" required>
+
+  <button type="submit">Add Specialization</button>
+</form>
+<div id="add-specialization-message"></div>
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // handle user registration form submit
+    $('#user-form').submit(function(event) {
+      event.preventDefault();
+
+      $.ajax({
+        url: $(this).attr('action'),
+        method: $(this).attr('method'),
+        data: $(this).serialize(),
+        success: function(response) {
+          $('#user-message').html('<p class="success">' + response.message + '</p>');
+          $('#user-form').trigger('reset');
+        },
+        error: function(error) {
+          $('#user-message').html('<p class="error">'
+            + error.responseJSON.message + '</p>');
+      }
+    });
+  });
+
+  // handle doctor registration form submit
+  $('#doctor-form').submit(function(event) {
+    event.preventDefault();
+
+    $.ajax({
+      url: $(this).attr('action'),
+      method: $(this).attr('method'),
+      data: $(this).serialize(),
+      success: function(response) {
+        $('#doctor-message').html('<p class="success">' + response.message + '</p>');
+        $('#doctor-form').trigger('reset');
+      },
+      error: function(error) {
+        $('#doctor-message').html('<p class="error">' + error.responseJSON.message + '</p>');
+      }
+    });
+  });
+});
+
+// handle add specialization form submit
+$('#add-specialization-form').submit(function(event) {
+    event.preventDefault();
+
+    $.ajax({
+      url: $(this).attr('action'),
+      method: $(this).attr('method'),
+      data: $(this).serialize(),
+      success: function(response) {
+        $('#add-specialization-message').html('<p class="success">' + response.message + '</p>');
+        $('#add-specialization-form').trigger('reset');
+      },
+      error: function(error) {
+        $('#add-specialization-message').html('<p class="error">' + error.responseJSON.message + '</p>');
+      }
+    });
+  });
+
+  // handle add specialization button click
+  $('#add-specialization-btn').click(function(event) {
+    event.preventDefault();
+
+    // hide doctor and user messages
+    $('#doctor-message').html('');
+    $('#user-message').html('');
+
+    // show add specialization form
+    $('#add-specialization-form').show();
+  });
+
+// User Login form submission event
+const userLoginForm = document.querySelector("#user-login-form");
+const userLoginMessage = document.querySelector("#user-login-message");
+
+userLoginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const email = userLoginForm.email.value;
+  const password = userLoginForm.password.value;
+
+  fetch("/login/user", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // User successfully logged in
+        userLoginMessage.innerHTML = "Login successful";
+        window.location.href = "/user/dashboard";
+      } else {
+        // Login failed
+        userLoginMessage.innerHTML = "Invalid email or password";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      userLoginMessage.innerHTML = "An error occurred";
+    });
+});
+
+// Doctor Login form submission event
+const doctorLoginForm = document.querySelector("#doctor-login-form");
+const doctorLoginMessage = document.querySelector("#doctor-login-message");
+
+doctorLoginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const email = doctorLoginForm.email.value;
+  const password = doctorLoginForm.password.value;
+
+  fetch("/login/doctor", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Doctor successfully logged in
+        doctorLoginMessage.innerHTML = "Login successful";
+        window.location.href = "/doctor/dashboard";
+      } else {
+        // Login failed
+        doctorLoginMessage.innerHTML = "Invalid email or password";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      doctorLoginMessage.innerHTML = "An error occurred";
+    });
+});
+
+
+</script>
+</body>
+</html>

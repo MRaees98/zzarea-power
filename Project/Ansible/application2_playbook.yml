@@ -1,0 +1,44 @@
+---
+- name: Deploy Nakama Application
+  hosts: app2
+
+  tasks:
+    - name: Ensure necessary dependencies are installed for Nakama
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - unzip
+        # Add other necessary dependencies for Nakama
+
+    - name: Download Nakama from GitHub release
+      get_url:
+        url: "https://github.com/heroiclabs/nakama/releases/latest/download/nakama_linux_amd64.tar.gz"
+        dest: /tmp/nakama.tar.gz
+        mode: 0644
+
+    - name: Extract Nakama archive
+      unarchive:
+        src: /tmp/nakama.tar.gz
+        dest: /opt/nakama
+        remote_src: yes
+
+    - name: Create a Nakama systemd service
+      template:
+        src: templates/nakama.service.j2
+        dest: /etc/systemd/system/nakama.service
+      notify:
+        - Reload Systemd
+
+    - name: Ensure Nakama service is running and enabled
+      service:
+        name: nakama
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Reload Systemd
+      systemd:
+        daemon_reload: yes
+        state: reloaded

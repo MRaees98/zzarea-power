@@ -1,0 +1,5 @@
+- name: Main Playbook
+  hosts: all
+  tasks:
+    - include: application1_playbook.yml
+    

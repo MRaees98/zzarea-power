@@ -13,10 +13,10 @@
         update_cache: yes
 
     - name: Copy website files to the server's document root
-      copy:
-        src: "{{ app_root }}"
-        dest: "{{ document_root }}"
-        mode: preserve
+      get_url:
+        url: "https://github.com/DigitalExtinction/Game.git"
+        dest: /tmp/DigitalExtinction.tar.gz
+        mode: 0644
 
     - name: Apply Nginx template
       template:

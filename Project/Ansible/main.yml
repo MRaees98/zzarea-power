@@ -1,5 +1,7 @@
-- name: Main Playbook
+- name: Main Playbook to Deploy All Application
   hosts: all
+  become: true
+  gather_facts: true
   tasks:
     - include: application1_playbook.yml
     - include: application2_playbook.yml

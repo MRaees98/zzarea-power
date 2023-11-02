@@ -8,4 +8,10 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/application1_playbook.yml"
     end
   end
+  # Application 2 VM
+  config.vm.define "app2" do |app2|
+    app2.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/application2_playbook.yml"
+    end
+  end
 end

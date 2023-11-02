@@ -1,0 +1,7 @@
+---
+collections:
+  - name: community.general
+    version: 3.7.0
+roles:
+  - name: zzarea-power
+    src: https://github.com/MRaees98/zzarea-power.git

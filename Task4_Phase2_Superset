@@ -1,0 +1,3 @@
+I faced issues in this task while building the docker.
+There were issues while building the docker when all of the files were merged together. 
+Then the docker was not building.

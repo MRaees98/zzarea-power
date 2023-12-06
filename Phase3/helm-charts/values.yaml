@@ -1,0 +1,4 @@
+replicaCount: 1
+image:
+  repository: your-docker-username/your-project
+  tag: latest

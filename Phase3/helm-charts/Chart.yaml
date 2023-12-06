@@ -1,0 +1,4 @@
+apiVersion: v2
+name: your-project
+description: A Helm Chart for deploying your project on Kubernetes
+version: 0.1.0
